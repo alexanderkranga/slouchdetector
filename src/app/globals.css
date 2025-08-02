@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom class for SlouchDetector overlay visibility */
+.overlays-ready {
+  /* This class is used to show overlays when video is ready */
+}
+
+/* Green glow animation for ready to calibrate */
+@keyframes greenGlow {
+  0% { 
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.6);
+    transform: scale(1);
+  }
+  100% { 
+    box-shadow: 0 0 30px rgba(40, 167, 69, 0.8);
+    transform: scale(1.02);
+  }
+}
+
+/* Yellow glow animation for calibration in progress */
+@keyframes yellowGlow {
+  0% { 
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
+    transform: scale(1);
+  }
+  100% { 
+    box-shadow: 0 0 30px rgba(255, 193, 7, 0.8);
+    transform: scale(1.02);
+  }
+}
+
+/* Green glow for ready to calibrate */
+.ready-to-calibrate {
+  background: rgba(40, 167, 69, 0.8) !important;
+  border-color: #28a745 !important;
+  color: white !important;
+  animation: greenGlow 2s ease-in-out infinite alternate;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.6) !important;
+}
+
+/* Yellow glow for calibration in progress */
+.calibrating {
+  background: rgba(255, 193, 7, 0.8) !important;
+  border-color: #ffc107 !important;
+  color: #000 !important;
+  animation: yellowGlow 1.5s ease-in-out infinite alternate;
+  box-shadow: 0 0 20px rgba(255, 193, 7, 0.6) !important;
+}
+
+/* Green glow for Track Posture button when ready */
+.ready-to-track {
+  background: rgba(40, 167, 69, 0.8) !important;
+  border-color: #28a745 !important;
+  color: white !important;
+  animation: greenGlow 2s ease-in-out infinite alternate;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.6) !important;
+}
