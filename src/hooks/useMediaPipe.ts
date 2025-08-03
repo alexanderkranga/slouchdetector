@@ -18,6 +18,7 @@ export const useMediaPipe = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const detectionIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isDetectionRunningRef = useRef(false);
+  const detectFaceRef = useRef<(() => void) | null>(null);
 
   const initializeMediaPipe = useCallback(async () => {
     try {
@@ -159,12 +160,15 @@ export const useMediaPipe = () => {
         }
         requestAnimationFrame(detectFace);
       } else {
-        // When tab is hidden, use setInterval
+        // When tab is hidden, use setInterval to keep detection running
         if (!detectionIntervalRef.current) {
           detectionIntervalRef.current = setInterval(detectFace, 33); // ~30 FPS
         }
       }
     };
+    
+    // Store detectFace function in a ref so visibility change handler can access it
+    detectFaceRef.current = detectFace;
     
     detectFace();
   }, [isLoaded, processFaceResults]);
@@ -176,25 +180,26 @@ export const useMediaPipe = () => {
       clearInterval(detectionIntervalRef.current);
       detectionIntervalRef.current = null;
     }
+    detectFaceRef.current = null;
     console.log('Face detection stopped');
   }, []);
 
   // Handle visibility changes
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (isDetectionRunningRef.current) {
+      if (isDetectionRunningRef.current && detectFaceRef.current) {
         if (document.visibilityState === 'visible') {
           console.log('Tab became visible - switching to requestAnimationFrame');
           if (detectionIntervalRef.current) {
             clearInterval(detectionIntervalRef.current);
             detectionIntervalRef.current = null;
           }
+          // Restart the detection loop with requestAnimationFrame
+          requestAnimationFrame(detectFaceRef.current);
         } else {
           console.log('Tab became hidden - switching to setInterval for background detection');
           if (!detectionIntervalRef.current) {
-            detectionIntervalRef.current = setInterval(() => {
-              // Re-run detection logic here if needed
-            }, 33);
+            detectionIntervalRef.current = setInterval(detectFaceRef.current, 33); // ~30 FPS
           }
         }
       }
