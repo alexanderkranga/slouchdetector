@@ -37,33 +37,32 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
     <div 
       className={`
         fixed top-0 left-0 w-screen h-screen 
-        bg-black/85 backdrop-blur-sm
+        bg-neutral-800/90 backdrop-blur-md
         flex items-center justify-center
         z-[2000] transition-opacity duration-300
         ${isAnimating ? 'opacity-100' : 'opacity-0 pointer-events-none'}
       `}
     >
       <div className="
-        bg-gradient-to-br from-gray-700 to-gray-800
-        border-2 border-gray-500
+        bg-neutral-700/80 backdrop-blur-md
+        border border-neutral-500/50
         rounded-3xl p-6 sm:p-8 lg:p-12
         max-w-[600px] w-[90vw]
-        shadow-2xl shadow-black/50
+        shadow-2xl
         text-center relative
       ">
         {modalType === 'welcome' && (
           <>
             <h1 className="
-              text-green-500 
+              text-green-400 
               text-2xl sm:text-3xl lg:text-4xl 
               font-bold mb-5
-              text-shadow-lg
             ">
               Welcome to SlouchDetector
             </h1>
             
             <p className="
-              text-gray-300 
+              text-gray-200 
               text-base sm:text-lg lg:text-xl
               leading-relaxed mb-8
             ">
@@ -72,7 +71,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
             
             <div className="text-left mb-8">
               <h3 className="
-                text-green-500 
+                text-green-400 
                 text-lg sm:text-xl lg:text-2xl
                 mb-4 text-center
               ">
@@ -91,7 +90,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
                     1
                   </div>
                   <div className="
-                    text-gray-300 
+                    text-gray-200 
                     text-sm sm:text-base lg:text-lg
                     leading-relaxed
                   ">
@@ -110,7 +109,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
                     2
                   </div>
                   <div className="
-                    text-gray-300 
+                    text-gray-200 
                     text-sm sm:text-base lg:text-lg
                     leading-relaxed
                   ">
@@ -129,7 +128,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
                     3
                   </div>
                   <div className="
-                    text-gray-300 
+                    text-gray-200 
                     text-sm sm:text-base lg:text-lg
                     leading-relaxed
                   ">
@@ -148,7 +147,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
                     4
                   </div>
                   <div className="
-                    text-gray-300 
+                    text-gray-200 
                     text-sm sm:text-base lg:text-lg
                     leading-relaxed
                   ">
@@ -163,16 +162,15 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
         {modalType === 'cameraPermission' && (
           <>
             <h1 className="
-              text-green-500 
+              text-green-400 
               text-2xl sm:text-3xl lg:text-4xl 
               font-bold mb-5
-              text-shadow-lg
             ">
               Camera Access Required
             </h1>
             
             <p className="
-              text-gray-300 
+              text-gray-200 
               text-base sm:text-lg lg:text-xl
               leading-relaxed mb-6
             ">
@@ -180,7 +178,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
             </p>
             
             <div className="
-              bg-green-900/20 border border-green-500/30 
+              bg-green-800/40 border border-green-500/50 
               rounded-lg p-4 mb-8
             ">
               <p className="
@@ -193,7 +191,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
             </div>
             
             <p className="
-              text-gray-300 
+              text-gray-200 
               text-base sm:text-lg lg:text-xl
               leading-relaxed mb-8
             ">
@@ -205,16 +203,15 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
         {modalType === 'cameraError' && (
           <>
             <h1 className="
-              text-red-500 
+              text-red-400 
               text-2xl sm:text-3xl lg:text-4xl 
               font-bold mb-5
-              text-shadow-lg
             ">
               Camera Access Required
             </h1>
             
             <p className="
-              text-gray-300 
+              text-gray-200 
               text-base sm:text-lg lg:text-xl
               leading-relaxed mb-8
             ">
@@ -222,7 +219,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
             </p>
             
             <p className="
-              text-gray-300 
+              text-gray-200 
               text-base sm:text-lg lg:text-xl
               leading-relaxed mb-8
             ">
@@ -231,26 +228,32 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
           </>
         )}
         
-        <button 
-          onClick={handleContinue}
-          className={`
-            border-none text-white
-            px-6 py-3 sm:px-8 sm:py-4 lg:px-12 lg:py-5
-            rounded-xl cursor-pointer
-            font-bold text-base sm:text-lg lg:text-xl
-            transition-all duration-300 ease-out
-            shadow-lg min-h-[44px] sm:min-h-[52px] lg:min-h-[60px]
-            inline-flex items-center justify-center
-            hover:-translate-y-0.5 hover:shadow-xl
-            active:translate-y-0
-            ${modalType === 'cameraError' 
-              ? 'bg-gradient-to-r from-blue-500 to-blue-600 shadow-blue-500/30 hover:from-blue-400 hover:to-blue-500 hover:shadow-blue-500/40' 
-              : 'bg-gradient-to-r from-green-500 to-teal-500 shadow-green-500/30 hover:from-green-400 hover:to-green-500 hover:shadow-green-500/40'
-            }
-          `}
-        >
-          {modalType === 'cameraError' ? 'Reload Page' : 'Continue'}
-        </button>
+        <div className="flex justify-center">
+          <button 
+            onClick={handleContinue}
+            className={`
+              relative px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5
+              bg-neutral-600/80 hover:bg-neutral-600/90
+              border border-neutral-400 hover:border-neutral-300
+              rounded-full cursor-pointer
+              transition-all duration-200 ease-in-out
+              backdrop-blur-md
+              flex items-center justify-center
+              text-gray-100 text-sm sm:text-base lg:text-lg
+              font-medium
+              hover:scale-105 active:scale-95
+              shadow-lg hover:shadow-xl
+              whitespace-nowrap
+              min-h-[44px] sm:min-h-[52px] lg:min-h-[60px]
+              ${modalType === 'cameraError' 
+                ? 'ring-2 ring-blue-500/50' 
+                : 'ring-2 ring-green-500/50'
+              }
+            `}
+          >
+            {modalType === 'cameraError' ? 'Reload Page' : 'Continue'}
+          </button>
+        </div>
       </div>
     </div>
   );
