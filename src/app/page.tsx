@@ -12,6 +12,7 @@ import WorkflowOverlay from '@/components/overlays/WorkflowOverlay';
 import MonitoringOverlay from '@/components/overlays/MonitoringOverlay';
 
 
+
 import AlertMessage from '@/components/AlertMessage';
 
 // Add Google Analytics script
@@ -221,14 +222,7 @@ export default function SlouchDetector() {
     setShowWelcomeModal(true);
   }, []);
 
-  const handleResetCalibration = useCallback(() => {
-    console.log('Resetting calibration');
-    setCalibrationState('ready');
-    setIsCalibrated(false);
-    setCurrentStep(1);
-    resetBaseline();
-    stopPostureMonitoring();
-  }, [resetBaseline, stopPostureMonitoring]);
+
 
   const handleStartCalibration = useCallback(() => {
     if (!isMediaPipeLoaded) {
@@ -256,15 +250,15 @@ export default function SlouchDetector() {
     } else if (calibrationState === 'completed') {
       // Third click: Reset and start over (like original HTML)
       console.log('Resetting calibration for re-calibration');
-      handleResetCalibration();
-      // After reset, automatically start calibration again
-      setTimeout(() => {
-        setCalibrationState('capturing');
-        setIsCalibrated(false);
-        console.log('Calibration restarted - waiting for user to click Save Posture');
-      }, 100);
+      // Reset and immediately start capturing - no intermediate states
+      setCalibrationState('capturing');
+      setIsCalibrated(false);
+      setCurrentStep(1);
+      stopPostureMonitoring();
+      resetBaseline();
+      console.log('Calibration restarted - waiting for user to click Save Posture');
     }
-  }, [calibrationState, isMediaPipeLoaded, currentLandmarks, saveBaseline, handleResetCalibration]);
+  }, [calibrationState, isMediaPipeLoaded, currentLandmarks, saveBaseline, stopPostureMonitoring, resetBaseline]);
 
 
 
@@ -308,7 +302,7 @@ export default function SlouchDetector() {
   return (
     <div className="
       font-['Segoe_UI',Tahoma,Geneva,Verdana,sans-serif]
-      bg-gray-800 text-gray-300
+      bg-neutral-800 text-gray-300
       min-h-screen m-0 p-2.5
       flex items-center justify-center
       overflow-hidden
@@ -325,7 +319,7 @@ export default function SlouchDetector() {
       {cameraPermissionDenied && (
         <div className="
           fixed top-0 left-0 w-full h-full
-          bg-gray-800 
+          bg-neutral-800 
           flex items-center justify-center
           z-[9999]
         ">
@@ -369,6 +363,14 @@ export default function SlouchDetector() {
           onCameraError={handleCameraError}
           isTrackingActive={isMonitoring}
           autoStart={cameraPermissionGranted}
+          onStartCalibration={handleStartCalibration}
+          calibrationState={calibrationState}
+          isCalibrated={isCalibrated}
+          isCalibrationLoading={isLoading}
+          onStartMonitoring={handleStartMonitoring}
+          onStopMonitoring={handleStopMonitoring}
+          isMonitoring={isMonitoring}
+          isReadyToTrack={isCalibrated && !isMonitoring}
         >
         {/* Overlays */}
         <TitleOverlay onHelpClick={handleHelpClick} />
@@ -378,22 +380,11 @@ export default function SlouchDetector() {
           currentStep={currentStep}
           isLoading={isLoading}
           loadingMessage={loadingMessage}
-          onStartCalibration={handleStartCalibration}
-          calibrationState={calibrationState}
-          isCalibrated={isCalibrated}
           showRetryCamera={showRetryCamera}
           onRetryCamera={handleRetryCamera}
         />
         
-
-        
-        <MonitoringOverlay
-          isVisible={isCalibrated}
-          isMonitoring={isMonitoring}
-          onStartMonitoring={handleStartMonitoring}
-          onStopMonitoring={handleStopMonitoring}
-          isReadyToTrack={isCalibrated && !isMonitoring}
-        />
+        <MonitoringOverlay />
         </VideoContainer>
       )}
 

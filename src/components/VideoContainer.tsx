@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, forwardRef, useCallback } from 'react';
 import { VideoState } from '@/types/slouch-detector';
+import BottomButtonPanel from './BottomButtonPanel';
 
 interface VideoContainerProps {
   onVideoReady: (videoState: VideoState) => void;
@@ -9,6 +10,15 @@ interface VideoContainerProps {
   isTrackingActive: boolean;
   autoStart?: boolean;
   children?: React.ReactNode;
+  // Button panel props
+  onStartCalibration: () => void;
+  calibrationState: 'ready' | 'capturing' | 'completed';
+  isCalibrated: boolean;
+  isCalibrationLoading: boolean;
+  onStartMonitoring: () => void;
+  onStopMonitoring: () => void;
+  isMonitoring: boolean;
+  isReadyToTrack: boolean;
 }
 
 const VideoContainer = forwardRef<{ 
@@ -16,7 +26,21 @@ const VideoContainer = forwardRef<{
   canvas: HTMLCanvasElement | null;
   startCamera: () => Promise<void>;
 }, VideoContainerProps>(
-  ({ onVideoReady, onCameraError, isTrackingActive, autoStart = true, children }, ref) => {
+  ({ 
+    onVideoReady, 
+    onCameraError, 
+    isTrackingActive, 
+    autoStart = true, 
+    children,
+    onStartCalibration,
+    calibrationState,
+    isCalibrated,
+    isCalibrationLoading,
+    onStartMonitoring,
+    onStopMonitoring,
+    isMonitoring,
+    isReadyToTrack
+  }, ref) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -65,8 +89,13 @@ const VideoContainer = forwardRef<{
 
     const updateVideoContainerSize = useCallback(() => {
       if (videoRef.current && videoRef.current.videoWidth && videoRef.current.videoHeight) {
-        const containerWidth = window.innerWidth - 20; // Account for padding
-        const containerHeight = window.innerHeight - 20;
+        // Use visualViewport API for better mobile support, fallback to innerHeight
+        const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        const viewportWidth = window.visualViewport?.width || window.innerWidth;
+        
+        // 20px spacing on all sides as requested
+        const containerWidth = viewportWidth - 40; // 20px padding on each side
+        const containerHeight = viewportHeight - 40; // 20px padding on top and bottom
         
         const videoAspectRatio = videoRef.current.videoWidth / videoRef.current.videoHeight;
         const containerAspectRatio = containerWidth / containerHeight;
@@ -150,16 +179,27 @@ const VideoContainer = forwardRef<{
       video.addEventListener('loadedmetadata', handleLoadedMetadata);
       video.addEventListener('playing', handlePlaying);
       window.addEventListener('resize', handleResize);
+      
+      // Listen for viewport changes on mobile
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', handleResize);
+      }
 
       return () => {
         video.removeEventListener('loadedmetadata', handleLoadedMetadata);
         video.removeEventListener('playing', handlePlaying);
         window.removeEventListener('resize', handleResize);
+        
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', handleResize);
+        }
       };
     }, [updateVideoContainerSize]);
 
     return (
-      <div className="w-[calc(100vw-20px)] h-[calc(100vh-20px)] flex items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center p-5" style={{ 
+        height: 'var(--viewport-height, 100vh)'
+      }}>
         <div 
           ref={containerRef}
           className={`
@@ -174,7 +214,7 @@ const VideoContainer = forwardRef<{
           {!videoState.isReady && (
             <div className="
               absolute inset-0 
-              bg-gray-800 
+              bg-neutral-800 
               flex items-center justify-center
               rounded-2xl
               z-10
@@ -206,6 +246,22 @@ const VideoContainer = forwardRef<{
             className="absolute top-0 left-0 w-full h-full pointer-events-none"
           />
           {children}
+          
+          {/* Button Panel positioned at bottom of camera view - only show when video is ready */}
+          {videoState.isReady && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 pointer-events-auto">
+              <BottomButtonPanel
+                onStartCalibration={onStartCalibration}
+                calibrationState={calibrationState}
+                isCalibrated={isCalibrated}
+                isCalibrationLoading={isCalibrationLoading}
+                onStartMonitoring={onStartMonitoring}
+                onStopMonitoring={onStopMonitoring}
+                isMonitoring={isMonitoring}
+                isReadyToTrack={isReadyToTrack}
+              />
+            </div>
+          )}
         </div>
       </div>
     );
