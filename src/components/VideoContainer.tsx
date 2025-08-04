@@ -9,6 +9,7 @@ interface VideoContainerProps {
   onCameraError: (error: Error) => void;
   isTrackingActive: boolean;
   autoStart?: boolean;
+  showCameraLoading?: boolean;
   children?: React.ReactNode;
   // Button panel props
   onStartCalibration: () => void;
@@ -31,6 +32,7 @@ const VideoContainer = forwardRef<{
     onCameraError, 
     isTrackingActive, 
     autoStart = true, 
+    showCameraLoading = false,
     children,
     onStartCalibration,
     calibrationState,
@@ -224,12 +226,14 @@ const VideoContainer = forwardRef<{
                   w-8 h-8 border-4 border-green-500 border-t-transparent 
                   rounded-full animate-spin mx-auto mb-4
                 "></div>
-                <p className="
-                  text-gray-300 
-                  text-lg font-medium
-                ">
-                  Loading camera...
-                </p>
+                {showCameraLoading && (
+                  <p className="
+                    text-gray-300 
+                    text-lg font-medium
+                  ">
+                    Loading camera...
+                  </p>
+                )}
               </div>
             </div>
           )}

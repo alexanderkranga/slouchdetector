@@ -25,14 +25,22 @@ export default function WorkflowOverlay({
         <div className="block">
           <div className="mb-2">
             {isLoading ? (
-              <span className="
-                text-white italic
-                text-sm sm:text-base lg:text-lg
-                drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]
-                [text-stroke:0.5px_black] [-webkit-text-stroke:0.5px_black]
-              ">
-                {loadingMessage}
-              </span>
+              <div className="flex items-center gap-2">
+                <div className="
+                  w-4 h-4 border-2 border-white/30 border-t-white
+                  rounded-full animate-spin
+                "></div>
+                {loadingMessage && (
+                  <span className="
+                    text-white italic
+                    text-sm sm:text-base lg:text-lg
+                    drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]
+                    [text-stroke:0.5px_black] [-webkit-text-stroke:0.5px_black]
+                  ">
+                    {loadingMessage}
+                  </span>
+                )}
+              </div>
             ) : showRetryCamera ? (
               <div>
                 <div className="mb-2 text-white text-sm sm:text-base lg:text-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">

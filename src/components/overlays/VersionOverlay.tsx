@@ -12,6 +12,7 @@ export default function VersionOverlay() {
         transition-all duration-300
         pointer-events-auto
         hover:bg-white/40 hover:border-gray-200/30
+        flex items-center
       ">
         <a 
           href="https://x.com/AlexHardmond" 

@@ -36,7 +36,7 @@ export default function SlouchDetector() {
   const [isCalibrated, setIsCalibrated] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingMessage, setLoadingMessage] = useState('Loading face detection...');
+  const [loadingMessage, setLoadingMessage] = useState('');
   const [showRetryCamera, setShowRetryCamera] = useState(false);
   const [overlaysReady, setOverlaysReady] = useState(false);
 
@@ -87,7 +87,7 @@ export default function SlouchDetector() {
   // Request camera permission
   const requestCameraPermission = async () => {
     try {
-      setLoadingMessage('Requesting camera access...');
+      setLoadingMessage('Loading camera...');
       if (videoContainerRef.current?.startCamera) {
         await videoContainerRef.current.startCamera();
         setCameraPermissionGranted(true);
@@ -142,7 +142,7 @@ export default function SlouchDetector() {
         }
       } catch (error) {
         console.error('Failed to initialize MediaPipe:', error);
-        setLoadingMessage('Failed to load face detection. Please refresh the page.');
+        setLoadingMessage('Failed to load. Please refresh the page.');
       }
     };
 
@@ -195,7 +195,7 @@ export default function SlouchDetector() {
   const handleRetryCamera = useCallback(() => {
     setShowRetryCamera(false);
     setIsLoading(true);
-    setLoadingMessage('Requesting camera access...');
+    setLoadingMessage('Loading camera...');
     // This would trigger camera retry in VideoContainer
   }, []);
 
@@ -317,13 +317,25 @@ export default function SlouchDetector() {
 
       {/* Camera Permission Denied Message */}
       {cameraPermissionDenied && (
-        <div className="
-          fixed top-0 left-0 w-full h-full
-          bg-neutral-800 
-          flex items-center justify-center
-          z-[9999]
-        ">
-          <div className="text-center max-w-md mx-auto px-6">
+        <div 
+          className="
+            fixed inset-0 w-full h-screen h-[100dvh]
+            bg-neutral-800 
+            z-[9999]
+            overflow-y-auto
+          "
+        >
+          <div 
+            className="
+              min-h-screen min-h-[100dvh] 
+              flex items-center justify-center
+              py-16 px-4
+            "
+            style={{
+              minHeight: '100dvh'
+            }}
+          >
+            <div className="text-center max-w-md mx-auto px-6 flex-shrink-0">
             <h1 className="
               text-red-400 
               text-2xl sm:text-3xl 
@@ -351,6 +363,7 @@ export default function SlouchDetector() {
             >
               Reload Page
             </button>
+            </div>
           </div>
         </div>
       )}
@@ -363,6 +376,7 @@ export default function SlouchDetector() {
           onCameraError={handleCameraError}
           isTrackingActive={isMonitoring}
           autoStart={cameraPermissionGranted}
+          showCameraLoading={cameraPermissionGranted}
           onStartCalibration={handleStartCalibration}
           calibrationState={calibrationState}
           isCalibrated={isCalibrated}
