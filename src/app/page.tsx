@@ -6,10 +6,10 @@ import { useMediaPipe } from '@/hooks/useMediaPipe';
 import { usePostureDetection } from '@/hooks/usePostureDetection';
 import VideoContainer from '@/components/VideoContainer';
 import WelcomeModal from '@/components/WelcomeModal';
-import TitleOverlay from '@/components/overlays/TitleOverlay';
 import VersionOverlay from '@/components/overlays/VersionOverlay';
 import WorkflowOverlay from '@/components/overlays/WorkflowOverlay';
 import MonitoringOverlay from '@/components/overlays/MonitoringOverlay';
+import VisualGuideOverlay from '@/components/overlays/VisualGuideOverlay';
 
 
 
@@ -39,6 +39,7 @@ export default function SlouchDetector() {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [showRetryCamera, setShowRetryCamera] = useState(false);
   const [overlaysReady, setOverlaysReady] = useState(false);
+  const [visualGuideEnabled, setVisualGuideEnabled] = useState(true); // Visual guide enabled by default
 
   const videoContainerRef = useRef<{ 
     video: HTMLVideoElement | null; 
@@ -60,6 +61,7 @@ export default function SlouchDetector() {
   const {
     isMonitoring,
     showAlert,
+    baseline,
     saveBaseline,
     checkPosture,
     startMonitoring: startPostureMonitoring,
@@ -270,6 +272,10 @@ export default function SlouchDetector() {
     stopPostureMonitoring();
   }, [stopPostureMonitoring]);
 
+  const handleToggleVisualGuide = useCallback(() => {
+    setVisualGuideEnabled(prev => !prev);
+  }, []);
+
   // Load Google Analytics
   useEffect(() => {
     // Create script elements for Google Analytics
@@ -385,10 +391,11 @@ export default function SlouchDetector() {
           onStopMonitoring={handleStopMonitoring}
           isMonitoring={isMonitoring}
           isReadyToTrack={isCalibrated && !isMonitoring}
+          visualGuideEnabled={visualGuideEnabled}
+          onToggleVisualGuide={handleToggleVisualGuide}
         >
         {/* Overlays */}
-        <TitleOverlay onHelpClick={handleHelpClick} />
-        <VersionOverlay />
+        <VersionOverlay onHelpClick={handleHelpClick} />
         
         <WorkflowOverlay
           currentStep={currentStep}
@@ -399,6 +406,14 @@ export default function SlouchDetector() {
         />
         
         <MonitoringOverlay />
+        
+        <VisualGuideOverlay 
+          isEnabled={visualGuideEnabled}
+          currentLandmarks={currentLandmarks}
+          baseline={baseline}
+          canvasWidth={videoContainerRef.current?.canvas?.width || 0}
+          canvasHeight={videoContainerRef.current?.canvas?.height || 0}
+        />
         </VideoContainer>
       )}
 

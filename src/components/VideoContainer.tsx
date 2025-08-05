@@ -20,6 +20,9 @@ interface VideoContainerProps {
   onStopMonitoring: () => void;
   isMonitoring: boolean;
   isReadyToTrack: boolean;
+  // Visual guide props
+  visualGuideEnabled: boolean;
+  onToggleVisualGuide: () => void;
 }
 
 const VideoContainer = forwardRef<{ 
@@ -41,7 +44,9 @@ const VideoContainer = forwardRef<{
     onStartMonitoring,
     onStopMonitoring,
     isMonitoring,
-    isReadyToTrack
+    isReadyToTrack,
+    visualGuideEnabled,
+    onToggleVisualGuide
   }, ref) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -263,6 +268,8 @@ const VideoContainer = forwardRef<{
                 onStopMonitoring={onStopMonitoring}
                 isMonitoring={isMonitoring}
                 isReadyToTrack={isReadyToTrack}
+                visualGuideEnabled={visualGuideEnabled}
+                onToggleVisualGuide={onToggleVisualGuide}
               />
             </div>
           )}

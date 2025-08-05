@@ -12,6 +12,10 @@ interface BottomButtonPanelProps {
   onStopMonitoring: () => void;
   isMonitoring: boolean;
   isReadyToTrack: boolean;
+  
+  // Visual guide props
+  visualGuideEnabled: boolean;
+  onToggleVisualGuide: () => void;
 }
 
 export default function BottomButtonPanel({
@@ -22,7 +26,9 @@ export default function BottomButtonPanel({
   onStartMonitoring,
   onStopMonitoring,
   isMonitoring,
-  isReadyToTrack
+  isReadyToTrack,
+  visualGuideEnabled,
+  onToggleVisualGuide
 }: BottomButtonPanelProps) {
   
   const getCalibrationButtonText = () => {
@@ -32,7 +38,7 @@ export default function BottomButtonPanel({
       case 'capturing':
         return 'Save';
       case 'completed':
-        return 'Recalibrate Posture';
+        return 'Recalibrate';
       default:
         return 'Calibrate Posture';
     }
@@ -93,6 +99,28 @@ export default function BottomButtonPanel({
     return `${baseClasses} bg-neutral-700/90 hover:bg-neutral-600/90`;
   };
 
+  const getVisualGuideButtonClasses = () => {
+    const baseClasses = `
+      relative px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4
+      border border-neutral-500 hover:border-neutral-400
+      rounded-full cursor-pointer
+      transition-all duration-200 ease-in-out
+      backdrop-blur-md
+      flex items-center justify-center
+      text-white text-xs sm:text-sm lg:text-base
+      font-medium
+      hover:scale-105 active:scale-95
+      shadow-lg hover:shadow-xl
+      whitespace-nowrap
+    `;
+
+    if (visualGuideEnabled) {
+      return `${baseClasses} bg-green-600/90 hover:bg-green-500/90 ring-2 ring-green-500/50`;
+    }
+
+    return `${baseClasses} bg-neutral-700/90 hover:bg-neutral-600/90`;
+  };
+
   return (
       <div className="
         bg-white/40 backdrop-blur-md
@@ -102,29 +130,6 @@ export default function BottomButtonPanel({
         flex items-center gap-3
         transition-all duration-300
       ">
-        {/* Calibrated Status Indicator */}
-        {isCalibrated && (
-          <div className="
-            w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7
-            bg-green-500 rounded-full
-            flex items-center justify-center
-            shadow-lg
-          ">
-            <svg
-              className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        )}
-
         {/* Calibration Button */}
         <div className="relative group">
           <button 
@@ -149,6 +154,17 @@ export default function BottomButtonPanel({
             </button>
           </div>
         )}
+
+        {/* Visual Guide Button */}
+        <div className="relative group">
+          <button 
+            onClick={onToggleVisualGuide}
+            className={getVisualGuideButtonClasses()}
+            title={visualGuideEnabled ? 'Hide Visual Guide' : 'Show Visual Guide'}
+          >
+            {visualGuideEnabled ? 'Hide Levels' : 'Show Levels'}
+          </button>
+        </div>
       </div>
   );
 }
