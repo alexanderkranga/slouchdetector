@@ -37,7 +37,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
         fixed inset-0 w-screen h-screen h-[100dvh] 
         bg-neutral-800/90 backdrop-blur-md
         z-[2000] transition-opacity duration-300
-        overflow-y-auto
+        overflow-y-auto sm:overflow-hidden
         ${isAnimating ? 'opacity-100' : 'opacity-0 pointer-events-none'}
       `}
     >
@@ -45,7 +45,7 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
         className="
           min-h-screen min-h-[100dvh] 
           flex items-center justify-center
-          py-16 px-4
+          py-4 sm:py-8 md:py-12 lg:py-16 xl:py-20 px-4
         "
         style={{
           minHeight: '100dvh'
@@ -54,11 +54,12 @@ export default function WelcomeModal({ isVisible, onClose, modalType, onRequestC
         <div className="
           bg-neutral-700/80 backdrop-blur-md
           border border-neutral-500/50
-          rounded-3xl p-6 sm:p-8 lg:p-12
-          max-w-[600px] w-[90vw]
+          rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12
+          max-w-[90vw] sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px] w-full
           shadow-2xl
           text-center relative
           flex-shrink-0
+          my-auto
         ">
           {modalType === 'welcome' && (
             <>
