@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Block development and build files
+Disallow: /_next/
+Disallow: /api/
+Disallow: /.well-known/
+
+# Sitemap location
+Sitemap: https://slouchdetector.net/sitemap.xml

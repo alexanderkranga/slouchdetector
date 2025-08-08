@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest an idea to improve SlouchDetector
+labels: [feature]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the solution you'd like
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Any alternative solutions or features you've considered
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+

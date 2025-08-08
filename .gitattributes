@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+# Treat images and binaries as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+
+# Ensure shell scripts are executable on checkout
+*.sh text eol=lf
+
